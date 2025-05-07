@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قرناني - خدمات التمويل الإعلاني وتبادل العملات</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/4488/4488426.png" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #4267B2;
+            --secondary-color: #2ecc71;
+            --accent-color: #FF5722;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --usd-color: #28a745;
+            --gbp-color: #6f42c1;
+            --eur-color: #007bff;
+            --whatsapp-color: #25D366;
+            --facebook-blue: #1877F2;
+            --tab-active-color: #4267B2;
+            --tab-inactive-color: #7f8c8d;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            font-weight: 400;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+        }
+        
+        @keyframes slideIn {
+            from { right: -100px; opacity: 0; }
+            to { right: 20px; opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--facebook-blue));
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            height: 70px;
+            width: auto;
+        }
+        
+        .logo img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .header-text {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.3rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header p {
+            margin: 10px 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            border-bottom: none;
+            position: relative;
+        }
+        
+        .tabs::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: #eee;
+            z-index: 1;
+        }
+        
+        .tab-btn {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--tab-inactive-color);
+            position: relative;
+            transition: all 0.3s;
+            margin: 0 5px;
+            border-radius: 8px 8px 0 0;
+            z-index: 2;
+        }
+        
+        .tab-btn i {
+            margin-left: 10px;
+            font-size: 1.1em;
+        }
+        
+        .tab-btn.active {
+            color: var(--tab-active-color);
+            background-color: white;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            z-index: 3;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pricing-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--primary-color);
+        }
+        
+        .pricing-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+            margin: 20px 0;
+        }
+        
+        .pricing-table thead th {
+            background: linear-gradient(135deg, var(--primary-color), #3b5998);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            position: relative;
+            border: none;
+            width: 33.33%;
+        }
+        
+        .pricing-table thead th:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .pricing-table thead th:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .pricing-table th i {
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .pricing-table td {
+            padding: 15px;
+            text-align: center;
+            background: white;
+            position: relative;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            width: 33.33%;
+        }
+        
+        .pricing-table tr:hover td {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pricing-table tr td:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        
+        .pricing-table tr td:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .plan-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .price-tag {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .price-tag i {
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        
+        .feature-item i {
+            margin-left: 10px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), #3b5998);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #3b5998, var(--primary-color));
+        }
+        
+        .highlight {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            z-index: 2;
+        }
+        
+        .extra-services {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 40px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .extra-services h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+        }
+        
+        .extra-services h2 i {
+            margin-left: 12px;
+            color: var(--accent-color);
+            font-size: 1.3rem;
+        }
+        
+        .extra-services p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .note-box {
+            background: #f8f9fa;
+            border-right: 4px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        
+        .note-box p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+        }
+        
+        .note-box i {
+            margin-left: 12px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            min-width: 25px;
+        }
+        
+        .currency-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--secondary-color);
+        }
+        
+        .currency-cards {
+            display: flex;
+            gap: 20px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .currency-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 180px;
+            max-width: 220px;
+            text-align: center;
+            border-top: 5px solid;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .currency-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: inherit;
+        }
+        
+        .currency-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .currency-card.usd {
+            border-color: var(--usd-color);
+        }
+        
+        .currency-card.gbp {
+            border-color: var(--gbp-color);
+        }
+        
+        .currency-card.eur {
+            border-color: var(--eur-color);
+        }
+        
+        .currency-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.03);
+        }
+        
+        .currency-card.usd .currency-icon {
+            color: var(--usd-color);
+            background: rgba(40, 167, 69, 0.1);
+        }
+        
+        .currency-card.gbp .currency-icon {
+            color: var(--gbp-color);
+            background: rgba(111, 66, 193, 0.1);
+        }
+        
+        .currency-card.eur .currency-icon {
+            color: var(--eur-color);
+            background: rgba(0, 123, 255, 0.1);
+        }
+        
+        .currency-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+        
+        .currency-rate {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 10px 0;
+        }
+        
+        .update-info {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        .converter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin: 30px auto;
+            max-width: 600px;
+            border-top: 5px solid var(--primary-color);
+        }
+        
+        h2 {
+            color: var(--dark-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-left: 12px;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1.05rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(66, 103, 178, 0.2);
+            outline: none;
+        }
+        
+        .exchange-rate-display {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .exchange-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .exchange-btn:hover {
+            background-color: #3a5a99;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .whatsapp-btn {
+            background-color: var(--whatsapp-color);
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .whatsapp-btn i {
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            display: none;
+            border: 1px solid #eee;
+        }
+        
+        .calculated-amount {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .conversion-box {
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .conversion-box strong {
+            color: var(--primary-color);
+            font-size: 1.3em;
+        }
+        
+        .rate-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .rate-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 1px solid #ddd;
+        }
+        
+        .rate-buttons button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .banks-section {
+            margin: 40px 0;
+            text-align: center;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .banks-title {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .banks-title::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .banks-logos {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+            align-items: center;
+        }
+        
+        .bank-logo {
+            height: 50px;
+            filter: grayscale(30%);
+            transition: all 0.3s;
+            object-fit: contain;
+            max-width: 120px;
+        }
+        
+        .bank-logo:hover {
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+        
+        .countries-section {
+            margin: 40px 0;
+            text-align: center;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .countries-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 25px;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .countries-title::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .country-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 15px;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .country-flag {
+            width: 70px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        
+        .country-name {
+            font-weight: 700;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 20px;
+            color: #666;
+            background-color: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -3px 15px rgba(0,0,0,0.05);
+        }
+        
+        footer p {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            margin: 0 8px;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* New styles for transactions ticker */
+        .transactions-ticker {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            position: relative;
+            border-top: 3px solid var(--secondary-color);
+        }
+        
+        .ticker-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ticker-title i {
+            margin-left: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .ticker-container {
+            height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .ticker-content {
+            position: absolute;
+            width: 100%;
+            animation: ticker 20s linear infinite;
+        }
+        
+        @keyframes ticker {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+        
+        .ticker-item {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ticker-item i {
+            margin-left: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .buy-transaction {
+            color: var(--usd-color);
+        }
+        
+        .sell-transaction {
+            color: var(--danger-color);
+        }
+        
+        .package-transaction {
+            color: var(--primary-color);
+        }
+        
+        /* Euro balance popup styles */
+        .euro-balance-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            right: 50%;
+            transform: translate(50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            z-index: 1001;
+            max-width: 500px;
+            width: 90%;
+            border-top: 5px solid var(--eur-color);
+            animation: popupFadeIn 0.4s;
+        }
+        
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        @keyframes popupFadeIn {
+            from { opacity: 0; transform: translate(50%, -60%); }
+            to { opacity: 1; transform: translate(50%, -50%); }
+        }
+        
+        .euro-balance-popup h3 {
+            color: var(--eur-color);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .euro-balance-popup h3 i {
+            margin-left: 10px;
+        }
+        
+        .euro-balance-popup p {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        
+        .euro-balance-popup button {
+            background: var(--eur-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .euro-balance-popup button:hover {
+            background: #0069d9;
+        }
+        
+        /* Payment methods section */
+        .payment-methods {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+        }
+        
+        .payment-methods img {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .payment-methods p {
+            margin: 0;
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .tab-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .currency-card {
+                min-width: 160px;
+            }
+            
+            .countries-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pricing-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .pricing-table td {
+                white-space: normal;
+            }
+            
+            .banks-logos {
+                gap: 15px;
+            }
+            
+            .bank-logo {
+                height: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .tab-btn i {
+                margin-left: 5px;
+            }
+            
+            .currency-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .currency-card {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .countries-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- رسالة Toast -->
+    <div id="toast" class="toast"></div>
+    
+    <!-- نافذة رسالة الرصيد باليورو -->
+    <div id="euroBalancePopup" class="euro-balance-popup">
+        <h3><i class="fas fa-euro-sign"></i> لديك رصيد باليورو</h3>
+        <p>إن كان لديك رصيد باليورو وأنت حالياً خارج البلاد. نقدم لك خدمة تحويل الرصيد إلى الدينار بسعر صرف مميز</p>
+        <p>يمكنك استخدام محول العملات أعلاه لمعرفة القيمة الحالية وتحويل رصيدك بكل سهولة.</p>
+        <button id="closeEuroPopup">حسناً، فهمت</button>
+    </div>
+    <div id="euroPopupOverlay" class="popup-overlay"></div>
+    
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1086/1086741.png" alt="شعار قرناني">
+                </div>
+                <div class="header-text">
+                    <h1>قرناني للخدمات الرقمية</h1>
+                    <p>تمويل إعلانات فيسبوك وتبادل العملات الإلكترونية بأفضل الأسعار</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- تبويب الصفحة - محسن -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="ad-funding">
+                <i class="fas fa-ad"></i> تمويل الإعلانات
+            </button>
+            <button class="tab-btn" data-tab="currency-exchange">
+                <i class="fas fa-exchange-alt"></i> تبادل العملات
+            </button>
+        </div>
+        
+        <!-- قسم تمويل الإعلانات - معدل -->
+        <div id="ad-funding" class="tab-content active">
+            <div class="pricing-section">
+                <h2><i class="fas fa-ad"></i> باقات تمويل الإعلانات</h2>
+                
+                <!-- إضافة شريط التعاملات الأخيرة -->
+                <div class="transactions-ticker">
+                    <div class="ticker-title">
+                        <i class="fas fa-history"></i> آخر تعاملات الباقات
+                    </div>
+                    <div class="ticker-container">
+                        <div class="ticker-content" id="ad-transactions-ticker">
+                            <!-- سيتم إضافة التعاملات عبر JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-crown"></i> الباقة الأساسية</th>
+                            <th><i class="fas fa-rocket"></i> الباقة المتقدمة</th>
+                            <th><i class="fas fa-gem"></i> الباقة المميزة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="plan-name">باقة مبتدئ</div>
+                            </td>
+                            <td>
+                                <div class="plan-name">باقة متقدمة</div>
+                            </td>
+                            <td>
+                                <div class="plan-name">باقة إعلانات متميزة</div>
+                                <div class="highlight">الأكثر طلباً</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-calendar-alt"></i> مدة الإعلان: 5 أيام
+                                </div>
+                            </td>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-calendar-alt"></i> مدة الإعلان: 10 أيام
+                                </div>
+                            </td>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-calendar-alt"></i> مدة الإعلان: 20 يوم
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-users"></i>
+                                    35 - 101 زيادة في المتابعين يومياً
+                                </div>
+                            </td>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-users"></i> 
+                                    47 - 136 زيادة في المتابعين يومياً
+                                </div>
+                            </td>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-users"></i> 
+                                    61 - 177 زيادة في المتابعين يومياً
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-chart-line"></i>
+9.7K - 28K
+                                </div>
+                            </td>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-chart-line"></i>
+13K - 37K
+                                </div>
+                            </td>
+                            <td>
+                                <div class="feature-item">
+                                    <i class="fas fa-chart-line"></i>
+14K - 42K
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="price-tag">
+                                    <i class="fas fa-tag"></i> 5,000 د.ج
+                                </div>
+                            </td>
+                            <td>
+                                <div class="price-tag">
+                                    <i class="fas fa-tag"></i> 12,000 د.ج
+                                </div>
+                            </td>
+                            <td>
+                                <div class="price-tag">
+                                    <i class="fas fa-tag"></i> 31,000 د.ج
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="btn whatsapp-plan-btn" data-plan="باقة مبتدئ">
+                                    <i class="fab fa-whatsapp"></i> اختر الباقة
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn whatsapp-plan-btn" data-plan="باقة متقدمة">
+                                    <i class="fab fa-whatsapp"></i> اختر الباقة
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn whatsapp-plan-btn" data-plan="باقة إعلانات متميزة">
+                                    <i class="fab fa-whatsapp"></i> اختر الباقة
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="payment-methods">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/AlgeriePoste.svg" alt="بريد الجزائر">
+                    <p>نقبل الدفع الإلكتروني عبر بريد الجزائر والتحويلات البنكية</p>
+                </div>
+                
+                <div class="extra-services">
+                    <h2><i class="fas fa-plus-circle"></i> خدمات إضافية</h2>
+                    <p>نقدم خدمات تصميم احترافية للشعارات والهويات البصرية لتعزيز حضورك الرقمي. يمكنك الحصول على تصميم شعار خاص بك مع هوية بصرية متكاملة مقابل 3000 د.ج إضافية.</p>
+                </div>
+                
+                <div class="note-box">
+                    <p><i class="fas fa-info-circle"></i> الأسعار ثابتة مع إمكانية التفاوض للعملاء الدائمين</p>
+                    <p><i class="fas fa-gift"></i> كل 8 إعلانات ممولة تحصل على إعلان ممول مجاني</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قسم تبادل العملات - محسن -->
+        <div id="currency-exchange" class="tab-content">
+            <div class="currency-section">
+                <h2><i class="fas fa-exchange-alt"></i> خدمات تبادل العملات</h2>
+                
+                <!-- إضافة شريط التعاملات الأخيرة -->
+                <div class="transactions-ticker">
+                    <div class="ticker-title">
+                        <i class="fas fa-history"></i> آخر تعاملات العملات
+                    </div>
+                    <div class="ticker-container">
+                        <div class="ticker-content" id="currency-transactions-ticker">
+                            <!-- سيتم إضافة التعاملات عبر JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="currency-cards">
+                    <div class="currency-card eur">
+                        <div class="currency-icon">
+                            <i class="fas fa-euro-sign"></i>
+                        </div>
+                        <div class="currency-name">اليورو الأوروبي</div>
+                        <div class="currency-rate" id="eur-rate">1 EUR = 250.00 DZD</div>
+                        <div class="update-info">سعر اليوم</div>
+                    </div>
+                    
+                    <div class="currency-card usd">
+                        <div class="currency-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="currency-name">الدولار الأمريكي</div>
+                        <div class="currency-rate" id="usd-rate">1 USD = 135.00 DZD</div>
+                        <div class="update-info">سعر اليوم</div>
+                    </div>
+                    
+                    <div class="currency-card gbp">
+                        <div class="currency-icon">
+                            <i class="fas fa-pound-sign"></i>
+                        </div>
+                        <div class="currency-name">الجنيه الإسترليني</div>
+                        <div class="currency-rate" id="gbp-rate">1 GBP = 170.00 DZD</div>
+                        <div class="update-info">سعر اليوم</div>
+                    </div>
+                </div>
+
+                <section class="converter-section">
+                    <h2><i class="fas fa-calculator"></i> محول العملات</h2>
+                    
+                    <div class="form-group">
+                        <label for="currency">العملة المطلوب تحويلها</label>
+                        <select id="currency">
+                            <option value="EUR">اليورو (EUR)</option>
+                            <option value="USD">الدولار (USD)</option>
+                            <option value="GBP">الجنيه (GBP)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">المبلغ</label>
+                        <input type="number" id="amount" placeholder="أدخل المبلغ" step="0.01" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>نوع العملية</label>
+                        <div class="rate-buttons">
+                            <button type="button" onclick="setExchangeRate('buy')" id="buy-btn" class="active">شراء</button>
+                            <button type="button" onclick="setExchangeRate('sell')" id="sell-btn">بيع</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>أسعار الصرف الحالية</label>
+                        <div class="exchange-rate-display" id="exchange-rate-display">
+                            <div id="buy-rate-display">سعر الشراء: 1 EUR = 250.00 DZD</div>
+                            <div id="sell-rate-display">سعر البيع: 1 EUR = 270.00 DZD</div>
+                            <div class="update-info">تم تحديث الأسعار يوم: <span id="update-date">الأحد، 27 أفريل 2025</span></div>
+                        </div>
+                    </div>
+                    
+                    <button id="convert-btn" class="exchange-btn">
+                        <i class="fas fa-exchange-alt"></i> تحويل
+                    </button>
+                    
+                    <a href="https://wa.me/213673608090?text=مرحباً، أريد طلب رصيد من العملات" class="whatsapp-btn" target="_blank">
+                        <i class="fab fa-whatsapp"></i> راسلنا لطلب الرصيد الآن
+                    </a>
+                    
+                    <div id="conversion-result" class="result"></div>
+                </section>
+                
+                <div class="payment-methods">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/AlgeriePoste.svg" alt="بريد الجزائر">
+                    <p>نقبل الدفع الإلكتروني عبر بريد الجزائر والتحويلات البنكية</p>
+                </div>
+                
+                <div class="banks-section">
+                    <h3 class="banks-title">البنوك التي ندعم التحويلات إليها</h3>
+                    <div class="banks-logos">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Paysera_logo_2022.png" alt="Paysera" class="bank-logo">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/New_Wise_%28formerly_TransferWise%29_logo.svg/1024px-New_Wise_%28formerly_TransferWise%29_logo.svg.png" alt="Wise" class="bank-logo">
+                        <img src="https://myfin.bg/assets/images/logo.png" alt="Myfin" class="bank-logo">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Revolut_logo.svg" alt="Revolut" class="bank-logo">
+                    </div>
+                </div>
+
+                <div class="countries-section">
+                    <h3 class="countries-title">نحن نتواجد في</h3>
+                    <div class="countries-grid">
+                        <div class="country-card">
+                            <img src="https://flagcdn.com/w40/de.png" alt="ألمانيا" class="country-flag">
+                            <div class="country-name">ألمانيا</div>
+                        </div>
+                        <div class="country-card">
+                            <img src="https://flagcdn.com/w40/us.png" alt="أمريكا" class="country-flag">
+                            <div class="country-name">الولايات المتحدة</div>
+                        </div>
+                        <div class="country-card">
+                            <img src="https://flagcdn.com/w40/it.png" alt="إيطاليا" class="country-flag">
+                            <div class="country-name">إيطاليا</div>
+                        </div>
+                        <div class="country-card">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="بريطانيا" class="country-flag">
+                            <div class="country-name">المملكة المتحدة</div>
+                        </div>
+                        <div class="country-card">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="فرنسا" class="country-flag">
+                            <div class="country-name">فرنسا</div>
+                        </div>
+                        <div class="country-card">
+                            <img src="https://flagcdn.com/w40/dz.png" alt="الجزائر" class="country-flag">
+                            <div class="country-name">الجزائر</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://wa.me/213673608090?text=مرحباً، أريد الاستفسار عن خدماتكم" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+            </div>
+            <p>جميع الحقوق محفوظة &copy; <span id="current-year"></span> قرناني للخدمات الرقمية</p>
+        </div>
+    </footer>
+
+    <script>
+        // سنة حقوق النشر الحالية
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // أسعار الصرف (يمكن تعديلها كما تريد)
+        const exchangeRates = {
+            EUR: { buy: 270.00, sell: 250.00, symbol: '€', name: 'اليورو' },
+            USD: { buy: 245.00, sell: 225.00, symbol: '$', name: 'الدولار' },
+            GBP: { buy: 300.00, sell: 280.00, symbol: '£', name: 'الجنيه' }
+        };
+        
+        let currentExchangeRate = exchangeRates.EUR.buy;
+        let currentOperationType = 'buy';
+        let currentCurrency = 'EUR';
+        
+        // بيانات التعاملات الأخيرة للعملات
+        const currencyTransactions = [
+            { type: 'buy', currency: 'EUR', amount: 450, name: 'طارق ميمون' },
+            { type: 'sell', currency: 'EUR', amount: 100, name: 'يونس واضح' },
+             { type: 'sell', currency: 'EUR', amount: 102, name: 'محمد ليتيم' },
+            { type: 'buy', currency: 'USD', amount: 150, name: 'أحمد زواوي' },
+            { type: 'sell', currency: 'GBP', amount: 50, name: 'محمد قادري' },
+            { type: 'buy', currency: 'EUR', amount: 75, name: 'يوسف بلمهدي' }
+        ];
+        
+        // بيانات التعاملات الأخيرة للباقات
+        const adTransactions = [
+            { package: 'الباقة الأساسية', name: 'نوح رقايقي' },
+            { package: 'الباقة المميزة', name: 'نجيب رقايقي' },
+            { package: 'الباقة المتقدمة', name: 'صلاح رقايقي' },
+            { package: 'الباقة الأساسية', name: 'التوأم سايح' },
+            { package: 'الباقة المميزة', name: 'سيم الجزائر' },
+            { package: 'الباقة المتقدمة', name: 'ماكسي انديستري' }
+        ];
+        
+        // دالة لعرض التعاملات الأخيرة للعملات
+        function displayCurrencyTransactions() {
+            const tickerContent = document.getElementById('currency-transactions-ticker');
+            let html = '';
+            
+            // إنشاء نسخة مكررة من التعاملات لعرضها بشكل متكرر في الشريط
+            const transactionsToShow = [...currencyTransactions, ...currencyTransactions];
+            
+            transactionsToShow.forEach(transaction => {
+                const action = transaction.type === 'buy' ? 'شراء' : 'بيع';
+                const currencySymbol = transaction.currency === 'EUR' ? '€' : 
+                                      transaction.currency === 'USD' ? '$' : '£';
+                const transactionClass = transaction.type === 'buy' ? 'buy-transaction' : 'sell-transaction';
+                
+                html += `
+                    <div class="ticker-item ${transactionClass}">
+                        <i class="fas fa-${transaction.type === 'buy' ? 'hand-holding-usd' : 'money-bill-wave'}"></i>
+                        قام ${transaction.name} ب${action} ${transaction.amount} ${currencySymbol}
+                    </div>
+                `;
+            });
+            
+            tickerContent.innerHTML = html;
+        }
+        
+        // دالة لعرض التعاملات الأخيرة للباقات
+        function displayAdTransactions() {
+            const tickerContent = document.getElementById('ad-transactions-ticker');
+            let html = '';
+            
+            // إنشاء نسخة مكررة من التعاملات لعرضها بشكل متكرر في الشريط
+            const transactionsToShow = [...adTransactions, ...adTransactions];
+            
+            transactionsToShow.forEach(transaction => {
+                html += `
+                    <div class="ticker-item package-transaction">
+                        <i class="fas fa-ad"></i>
+                        قام ${transaction.name} بشراء ${transaction.package}
+                    </div>
+                `;
+            });
+            
+            tickerContent.innerHTML = html;
+        }
+        
+        // تحديث عرض أسعار الصرف
+        function updateExchangeRateDisplay() {
+            // تحديث بطاقات العملات
+            document.getElementById('eur-rate').textContent = `1 EUR = ${exchangeRates.EUR.buy.toFixed(2)} DZD`;
+            document.getElementById('usd-rate').textContent = `1 USD = ${exchangeRates.USD.buy.toFixed(2)} DZD`;
+            document.getElementById('gbp-rate').textContent = `1 GBP = ${exchangeRates.GBP.buy.toFixed(2)} DZD`;
+            
+            // تحديث أسعار التحويل الحالية
+            updateCurrentRates();
+        }
+        
+        // تحديث أسعار التحويل الحالية حسب العملة المختارة
+        function updateCurrentRates() {
+            const currency = currentCurrency;
+            
+            document.getElementById('buy-rate-display').textContent = 
+                `سعر الشراء: 1 ${currency} = ${exchangeRates[currency].buy.toFixed(2)} DZD`;
+            document.getElementById('sell-rate-display').textContent = 
+                `سعر البيع: 1 ${currency} = ${exchangeRates[currency].sell.toFixed(2)} DZD`;
+        }
+        
+        // التبديل بين سعر الشراء والبيع
+        function setExchangeRate(type) {
+            currentOperationType = type;
+            const buyButton = document.getElementById('buy-btn');
+            const sellButton = document.getElementById('sell-btn');
+            
+            if (type === 'buy') {
+                currentExchangeRate = exchangeRates[currentCurrency].buy;
+                buyButton.classList.add('active');
+                sellButton.classList.remove('active');
+            } else {
+                currentExchangeRate = exchangeRates[currentCurrency].sell;
+                buyButton.classList.remove('active');
+                sellButton.classList.add('active');
+            }
+            showToast(`تم التبديل إلى سعر ${type === 'buy' ? 'الشراء' : 'البيع'}`);
+        }
+        
+        // تحويل العملة
+        document.getElementById('convert-btn').addEventListener('click', function() {
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value);
+            
+            if (isNaN(amount)) {
+                showToast('الرجاء إدخال مبلغ صحيح', 'error');
+                amountInput.focus();
+                return;
+            }
+            
+            if (amount <= 0) {
+                showToast('المبلغ يجب أن يكون أكبر من الصفر', 'error');
+                amountInput.focus();
+                return;
+            }
+            
+            const rate = currentOperationType === 'buy' ? exchangeRates[currentCurrency].buy : exchangeRates[currentCurrency].sell;
+            const result = amount * rate;
+            const operationType = currentOperationType === 'buy' ? 'الشراء' : 'البيع';
+            
+            const resultElement = document.getElementById('conversion-result');
+            resultElement.innerHTML = `
+                <div class="conversion-box">
+                    <p>${amount.toFixed(2)} ${exchangeRates[currentCurrency].symbol} = 
+                    <strong class="calculated-amount">${result.toFixed(2)} د.ج</strong></p>
+                    <small>سعر الصرف: 1 ${currentCurrency} = ${rate.toFixed(2)} DZD (عملية ${operationType})</small>
+                    <div class="update-info">تم تحديث الأسعار يوم: ${document.getElementById('update-date').textContent}</div>
+                </div>
+            `;
+            resultElement.style.display = 'block';
+        });
+        
+        // تغيير العملة المختارة
+        document.getElementById('currency').addEventListener('change', function() {
+            currentCurrency = this.value;
+            setExchangeRate(currentOperationType);
+            showToast(`تم اختيار العملة: ${exchangeRates[currentCurrency].name}`);
+        });
+        
+        // وظيفة عرض Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            toast.style.backgroundColor = 
+                type === 'error' ? 'var(--danger-color)' :
+                type === 'warning' ? 'orange' :
+                'var(--secondary-color)';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+        
+        // إغلاق نافذة الرصيد باليورو
+        document.getElementById('closeEuroPopup').addEventListener('click', function() {
+            document.getElementById('euroBalancePopup').style.display = 'none';
+            document.getElementById('euroPopupOverlay').style.display = 'none';
+        });
+        
+        // تبديل بين تبويبات الصفحة
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // إزالة الفعالية من جميع الأزرار
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                // إضافة الفعالية للزر المحدد
+                this.classList.add('active');
+                
+                // إخفاء جميع المحتويات
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // إظهار المحتوى المحدد
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // إرسال رسالة واتساب عند اختيار الباقة
+        document.querySelectorAll('.whatsapp-plan-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const planName = this.getAttribute('data-plan');
+                const phoneNumber = "+213673608090";
+                const message = `مرحباً، أنا مهتم بالباقة الإعلانية: ${planName}`;
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+        });
+        
+        // تهيئة الصفحة عند التحميل
+        window.addEventListener('DOMContentLoaded', function() {
+            updateExchangeRateDisplay();
+            setExchangeRate('buy');
+            displayCurrencyTransactions();
+            displayAdTransactions();
+            
+            setTimeout(function() {
+                document.getElementById('euroBalancePopup').style.display = 'block';
+                document.getElementById('euroPopupOverlay').style.display = 'block';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

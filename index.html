@@ -149,7 +149,13 @@
             display: flex;
             align-items: center;
             white-space: nowrap;
-            animation: ticker 30s linear infinite;
+            animation: ticker 30s linear infinite !important;
+            animation-play-state: running !important;
+            pointer-events: none;
+        }
+
+        .news-container:hover {
+            animation-play-state: running !important;
         }
 
         .news-label {
@@ -1589,16 +1595,6 @@
 
         // إضافة السنة الحالية في الفوتر
         document.getElementById('year').textContent = new Date().getFullYear();
-
-        // إيقاف شريط الأخبار عند التوقف عليه
-        const newsTicker = document.querySelector('.news-container');
-        newsTicker.addEventListener('mouseenter', function() {
-            this.style.animationPlayState = 'paused';
-        });
-
-        newsTicker.addEventListener('mouseleave', function() {
-            this.style.animationPlayState = 'running';
-        });
     </script>
 </body>
 </html>
